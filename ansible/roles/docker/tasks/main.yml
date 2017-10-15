@@ -1,0 +1,21 @@
+---
+- name: Create packages folder
+  file:
+    path: /packages
+    state: directory
+
+- name: Copy docker deb
+  copy:
+    src: "{{ docker_deb }}"
+    dest: "/packages/docker.deb"
+
+- name: Install docker
+  apt: 
+    deb: "/packages/docker.deb"  
+    state: present
+
+- name: Add insecure registries
+  template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+  notify: Restart Docker
