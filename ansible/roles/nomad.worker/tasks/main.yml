@@ -1,0 +1,12 @@
+---
+- name: Create nomad config file
+  template:
+    src: client.hcl.j2
+    dest: /etc/nomad.d/client.hcl
+  notify: Restart Nomad
+
+- name: Create nomad service file
+  template:
+    src: nomad.service.j2
+    dest: /etc/systemd/system/nomad.service
+  notify: Restart Nomad

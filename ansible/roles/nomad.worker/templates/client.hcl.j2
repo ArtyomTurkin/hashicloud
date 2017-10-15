@@ -1,0 +1,13 @@
+region = "{{ region }}"
+datacenter = "{{ datacenter }}"
+data_dir = "/var/nomad"
+
+client {
+  enabled = true
+  no_host_uuid = false
+
+  meta {
+    "host" = "{{ inventory_hostname }}"
+    "groups" = "{{ group_names | join(',') }}"
+  }
+}
