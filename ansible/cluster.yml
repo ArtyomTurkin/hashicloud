@@ -1,0 +1,19 @@
+---
+- hosts: masters
+  vars_files:
+  - vars/cluster.info.yml
+  - vars/packages.yml
+  - vars/secrets.yml
+  roles:
+  - consul.master
+  - nomad.master
+
+- hosts: workers
+  vars_files:
+  - vars/cluster.info.yml
+  - vars/packages.yml
+  - vars/secrets.yml
+  roles:
+  - docker
+  - consul.worker
+  - nomad.worker

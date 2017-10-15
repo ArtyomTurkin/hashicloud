@@ -1,0 +1,4 @@
+---
+consul_url: https://releases.hashicorp.com/consul/0.9.3/consul_0.9.3_linux_amd64.zip
+nomad_url: https://releases.hashicorp.com/nomad/0.7.0-beta1/nomad_0.7.0-beta1_linux_amd64.zip
+docker_deb: /mnt/c/Users/artmt/Downloads/docker-ce_17.09.0~ce-0~ubuntu_amd64.deb
