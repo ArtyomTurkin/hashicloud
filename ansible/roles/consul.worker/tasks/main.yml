@@ -1,0 +1,17 @@
+---
+- name: Create config folder
+  file:
+    path: /etc/consul.d/client
+    state: directory
+
+- name: Create consul config file
+  template:
+    src: consul.config.j2
+    dest: /etc/consul.d/client/config.json
+  notify: Restart Consul
+
+- name: Create consul service file
+  template:
+    src: consul.service.j2
+    dest: /etc/systemd/system/consul.service
+  notify: Restart Consul
