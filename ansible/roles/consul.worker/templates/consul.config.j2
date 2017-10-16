@@ -1,8 +1,7 @@
 {
     "server": false,
     "datacenter": "{{ datacenter }}",
-    "advertise_addr":"{{ ansible_default_ipv4.address }}",
-    "bind_addr":"0.0.0.0",
+    "client_addr": "0.0.0.0",
     "data_dir": "/var/consul",
     "encrypt": "{{ consul_key }}",
     "log_level": "INFO",
