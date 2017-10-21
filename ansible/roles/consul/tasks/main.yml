@@ -1,0 +1,61 @@
+---
+- name: Get current version
+  command: consul version | grep '^Consul' | sed -e 's/Consul\sv//'
+  register: installed_consul_version
+  changed_when: false
+
+- debug:
+    msg: "Consul installed version: {{ installed_consul_version.stdout }}"
+
+- name: Get Consul binary
+  unarchive: 
+    src: "{{ consul_url }}"
+    dest: "{{ consul_dir }}"
+    remote_src: true
+  when:
+    - consul_version not in installed_consul_version.stdout
+  notify: Restart Consul
+
+- name: Create Consul group
+  group:
+    name: consul
+    state: present
+
+- name: Create Consul user
+  user:
+    name: consul
+    comment: User fro Consul to run under
+    groups: consul
+
+- name: Create work folder
+  file:
+    path: /var/consul
+    state: directory
+    owner: consul
+
+- name: Create config folder
+  file:
+    path: /etc/consul.d/config
+    state: directory
+
+- name: Create consul server config file
+  template:
+    src: server.config.j2
+    dest: /etc/consul.d/config/config.json
+  when:
+    - inventory_hostname in consul_servers
+  notify: Restart Consul
+
+- name: Create consul client config file
+  template:
+    src: client.config.j2
+    dest: /etc/consul.d/config/config.json
+  when:
+    - inventory_hostname not in consul_servers
+  notify: Restart Consul
+
+- name: Create consul service file
+  template:
+    src: consul.service.j2
+    dest: /etc/systemd/system/consul.service
+  notify: Restart Consul

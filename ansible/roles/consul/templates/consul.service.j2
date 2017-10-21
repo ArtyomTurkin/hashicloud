@@ -1,0 +1,17 @@
+[Unit]
+Description=consul
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+EnvironmentFile=-/etc/sysconfig/consul
+Environment=GOMAXPROCS=2
+Restart=on-failure
+{% raw %}
+ExecStart=/usr/sbin/consul agent -config-dir=/etc/consul.d/config -bind='{{ GetInterfaceIP "eth0" }}'
+{% endraw %}
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,10 @@
+{
+    "server": false,
+    "datacenter": "{{ datacenter }}",
+    "client_addr": "0.0.0.0",
+    "data_dir": "/var/consul",
+    "encrypt": "{{ consul_key }}",
+    "log_level": "INFO",
+    "enable_syslog": true,
+    "retry_join": {{ consul_servers | to_json }}
+}
