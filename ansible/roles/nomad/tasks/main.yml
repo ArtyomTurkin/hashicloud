@@ -14,6 +14,7 @@
     remote_src: true
   when:
     - nomad_version not in installed_nomad_version.stdout
+  notify: Restart Nomad
 
 - name: Create Nomad group
   group:
