@@ -1,0 +1,3 @@
+---
+nomad_dir: /usr/sbin
+nomad_version: 0.7.0-beta1

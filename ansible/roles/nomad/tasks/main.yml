@@ -1,0 +1,60 @@
+---
+- name: Get current version
+  command: nomad version | grep '^Nomad' | sed -e 's/Nomad\sv//'
+  register: installed_nomad_version
+  changed_when: false
+
+- debug:
+    msg: "Nomad installed version: {{ installed_nomad_version.stdout }}"
+
+- name: Get Nomad binary
+  unarchive: 
+    src: "{{ nomad_url }}"
+    dest: "{{ nomad_dir }}"
+    remote_src: true
+  when:
+    - nomad_version not in installed_nomad_version.stdout
+
+- name: Create Nomad group
+  group:
+    name: nomad
+    state: present
+
+- name: Create Nomad user
+  user:
+    name: nomad
+    comment: User for Nomad to run under
+    groups: nomad
+
+- name: Create work folder
+  file:
+    path: /var/nomad
+    state: directory
+    owner: nomad
+
+- name: Create config folder
+  file:
+    path: /etc/nomad.d
+    state: directory
+
+- name: Create nomad server config file
+  template:
+    src: server.hcl.j2
+    dest: /etc/nomad.d/config.hcl
+  when:
+   - inventory_hostname in nomad_masters
+  notify: Restart Nomad
+
+- name: Create nomad client config file
+  template:
+    src: client.hcl.j2
+    dest: /etc/nomad.d/config.hcl
+  when:
+   - inventory_hostname not in nomad_masters
+  notify: Restart Nomad
+
+- name: Create nomad service file
+  template:
+    src: nomad.service.j2
+    dest: /etc/systemd/system/nomad.service
+  notify: Restart Nomad
