@@ -43,7 +43,7 @@
     src: server.hcl.j2
     dest: /etc/nomad.d/config.hcl
   when:
-   - inventory_hostname in nomad_masters
+    - inventory_hostname in nomad_masters
   notify: Restart Nomad
 
 - name: Create nomad client config file
@@ -51,7 +51,7 @@
     src: client.hcl.j2
     dest: /etc/nomad.d/config.hcl
   when:
-   - inventory_hostname not in nomad_masters
+    - inventory_hostname not in nomad_masters
   notify: Restart Nomad
 
 - name: Create nomad service file
