@@ -11,6 +11,10 @@
   
   roles:
   - role: docker
+  - role: weave.scope
+    vars:
+    - cluster_with: "{{ groups['all'] }}"
+
   - role: consul
     vars:
     - servers: "{{ groups['masters'] }}"
