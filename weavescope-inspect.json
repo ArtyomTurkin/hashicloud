@@ -1,0 +1,26 @@
+[
+    {
+        "Type": "bind",
+        "Source": "/var/run/scope/plugins",
+        "Destination": "/var/run/scope/plugins",
+        "Mode": "",
+        "RW": true,
+        "Propagation": "rprivate"
+    },
+    {
+        "Type": "bind",
+        "Source": "/sys/kernel/debug",
+        "Destination": "/sys/kernel/debug",
+        "Mode": "",
+        "RW": true,
+        "Propagation": "rprivate"
+    },
+    {
+        "Type": "bind",
+        "Source": "/var/run/docker.sock",
+        "Destination": "/var/run/docker.sock",
+        "Mode": "",
+        "RW": true,
+        "Propagation": "rprivate"
+    }
+]
