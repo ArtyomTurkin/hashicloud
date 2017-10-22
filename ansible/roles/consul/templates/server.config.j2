@@ -2,9 +2,10 @@
     "bootstrap_expect": {{ servers | length }},
     "server": true,
     "datacenter": "{{ datacenter }}",
+    "client_addr": "0.0.0.0",
     "data_dir": "/var/consul",
     "encrypt": "{{ consul_key }}",
     "log_level": "INFO",
     "enable_syslog": true,
-    "retry_join": {{ servers | to_json }}
+    "retry_join": {{ servers | difference([inventory_hostname]) | to_json }}
 }
