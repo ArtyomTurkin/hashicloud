@@ -4,5 +4,5 @@ data_dir = "/var/nomad"
 
 server {
   enabled          = true
-  bootstrap_expect = {{ nomad_masters | length }}
+  bootstrap_expect = {{ servers | length }}
 }

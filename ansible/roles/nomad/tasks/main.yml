@@ -1,11 +1,11 @@
 ---
 - name: Get current version
   command: nomad version | grep '^Nomad' | sed -e 's/Nomad\sv//'
-  register: installed_nomad_version
+  register: installed_version
   changed_when: false
 
 - debug:
-    msg: "Nomad installed version: {{ installed_nomad_version.stdout }}"
+    msg: "Nomad installed version: {{ installed_version.stdout }}"
 
 - name: Get Nomad binary
   unarchive: 
@@ -13,7 +13,7 @@
     dest: "{{ nomad_dir }}"
     remote_src: true
   when:
-    - nomad_version not in installed_nomad_version.stdout
+    - version not in installed_version.stdout
   notify: Restart Nomad
 
 - name: Create Nomad group
@@ -43,7 +43,7 @@
     src: server.hcl.j2
     dest: /etc/nomad.d/config.hcl
   when:
-    - inventory_hostname in nomad_masters
+    - inventory_hostname in servers
   notify: Restart Nomad
 
 - name: Create nomad client config file
@@ -51,7 +51,7 @@
     src: client.hcl.j2
     dest: /etc/nomad.d/config.hcl
   when:
-    - inventory_hostname not in nomad_masters
+    - inventory_hostname not in servers
   notify: Restart Nomad
 
 - name: Create nomad service file
