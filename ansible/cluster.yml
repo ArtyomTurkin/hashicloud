@@ -10,6 +10,7 @@
     - registry.example.com
   
   roles:
+  - role: docker
   - role: consul
     vars:
     - servers: "{{ groups['masters'] }}"
