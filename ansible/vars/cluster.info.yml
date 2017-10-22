@@ -1,5 +1,0 @@
----
-region: test-region
-datacenter: test
-docker_registries:
-  - registry.example.com

@@ -1,19 +1,21 @@
 ---
-- hosts: masters
+- hosts: all
   vars_files:
-  - vars/cluster.info.yml
   - vars/packages.yml
   - vars/secrets.yml
+  vars:
+  - region: test-region
+  - datacenter: test-dc
+  - docker_unsafe_registries:
+    - registry.example.com
+  
   roles:
-  - consul.master
-  - nomad.master
-
-- hosts: workers
-  vars_files:
-  - vars/cluster.info.yml
-  - vars/packages.yml
-  - vars/secrets.yml
-  roles:
-  - docker
-  - consul.worker
-  - nomad.worker
+  - role: consul
+    vars:
+    - servers: "{{ groups['masters'] }}"
+    - version: 0.9.3
+    
+  - role: nomad
+    vars:
+    - servers: "{{ groups['masters'] }}"
+    - version: 0.7.0-beta1
