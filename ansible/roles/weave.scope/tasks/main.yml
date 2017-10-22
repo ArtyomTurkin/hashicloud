@@ -1,0 +1,16 @@
+---
+- name: Start Weave.Scope
+  docker_container:
+    name: weavescope
+    image: weaveworks/scope
+    privileged: yes
+    network_mode: host
+    pid_mode: host
+    entrypoint: "/home/weave/entrypoint.sh --probe.docker=true {{ cluster_with | join(' ') }}"
+    published_ports:
+      - 4040:4040
+    restart_policy: always
+    volumes:
+      - /var/run/scope/plugins:/var/run/scope/plugins
+      - /sys/kernel/debug:/sys/kernel/debug
+      - /var/run/docker.sock:/var/run/docker.sock
