@@ -6,5 +6,5 @@
     "encrypt": "{{ consul_key }}",
     "log_level": "INFO",
     "enable_syslog": true,
-    "retry_join": {{ consul_servers | to_json }}
+    "retry_join": {{ servers | to_json }}
 }

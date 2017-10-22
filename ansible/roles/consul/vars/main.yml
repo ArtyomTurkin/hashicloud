@@ -1,2 +1,3 @@
 ---
 consul_dir: /usr/sbin
+version: 0.9.3
