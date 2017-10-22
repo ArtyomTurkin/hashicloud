@@ -1,8 +1,0 @@
-region = "{{ region }}"
-datacenter = "{{ datacenter }}"
-data_dir = "/var/nomad"
-
-server {
-  enabled          = true
-  bootstrap_expect = {{ groups['masters'] | length }}
-}
