@@ -1,11 +1,23 @@
 ---
 - name: Get current version
   command: nomad version | grep '^Nomad' | sed -e 's/Nomad\sv//'
-  register: installed_version
+  register: c_installed_version
   changed_when: false
+  failed_when: c_installed_version.rc > 2
 
 - debug:
-    msg: "Nomad installed version: {{ installed_version.stdout }}"
+    msg: "Nomad installed version: {{ c_installed_version.stdout }}"
+  when: c_installed_version.stdout is defined
+
+- name: Set installed_version
+  set_fact:
+    installed_version: "{{ c_installed_version.stdout }}"
+  when: c_installed_version.stdout is defined
+
+- name: Set installed_version to 0
+  set_fact:
+    installed_version: "0"
+  when: c_installed_version.stdout is undefined
 
 - name: Get Nomad binary
   unarchive: 
@@ -13,7 +25,7 @@
     dest: "{{ nomad_dir }}"
     remote_src: true
   when:
-    - version not in installed_version.stdout
+    - version not in installed_version
   notify: Restart Nomad
 
 - name: Create Nomad group

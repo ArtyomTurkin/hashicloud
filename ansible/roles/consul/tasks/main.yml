@@ -1,19 +1,30 @@
 ---
 - name: Get current version
   command: consul --version | grep '^Consul' | sed -e 's/Consul\sv//'
-  register: installed_version
+  register: c_installed_version
   changed_when: false
+  failed_when: c_installed_version.rc > 2
 
 - debug:
-    msg: "Consul installed version: {{ installed_version.stdout }}"
+    msg: "Consul installed version: {{ c_installed_version.stdout }}"
+  when: c_installed_version.stdout is defined
+
+- name: Set installed_version
+  set_fact:
+    installed_version: "{{ c_installed_version.stdout }}"
+  when: c_installed_version.stdout is defined
+
+- name: Set installed_version to 0
+  set_fact:
+    installed_version: "0"
+  when: c_installed_version.stdout is undefined
 
 - name: Get Consul binary
   unarchive: 
     src: "{{ consul_url }}"
     dest: "{{ consul_dir }}"
     remote_src: true
-  when:
-    - version not in installed_version.stdout
+  when: version not in installed_version
   notify: Restart Consul
 
 - name: Create Consul group
@@ -24,7 +35,7 @@
 - name: Create Consul user
   user:
     name: consul
-    comment: User fro Consul to run under
+    comment: User for Consul to run under
     groups: consul
 
 - name: Create work folder
