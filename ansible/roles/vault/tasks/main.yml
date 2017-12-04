@@ -1,0 +1,67 @@
+---
+- name: Get current version
+  command: vault --version | grep '^Vault' | sed 's/[^0-9.]*\([0-9.]*\).*/\1/'
+  register: c_installed_version
+  changed_when: false
+  failed_when: c_installed_version.rc > 2
+
+- debug:
+    msg: "Vault installed version: {{ c_installed_version.stdout }}"
+  when: c_installed_version.stdout is defined
+
+- name: Set installed_version
+  set_fact:
+    installed_version: "{{ c_installed_version.stdout }}"
+  when: c_installed_version.stdout is defined
+
+- name: Set installed_version to 0
+  set_fact:
+    installed_version: "0"
+  when: c_installed_version.stdout is undefined
+
+- name: Download Vault binary
+  unarchive: 
+    src: "{{ vault_url }}"
+    dest: "{{ vault_dir }}"
+    remote_src: true
+  when:
+    - version not in installed_version
+    - remote
+  notify: Restart Vault
+
+- name: Copy Vault binary from local
+  copy:
+    src: "{{ vault_url }}"
+    dest: "{{ vault_dir }}/vault"
+  when:
+    - version not in installed_version
+    - not remote
+  notify: Restart Vault
+
+- name: Create Vault group
+  group:
+    name: vault
+    state: present
+
+- name: Create Vault user
+  user:
+    name: vault
+    comment: User for Vault to run under
+    groups: vault
+
+- name: Create config folder
+  file:
+    path: /etc/vault.d
+    state: directory
+
+- name: Create vault server config file
+  template:
+    src: vault.hcl.j2
+    dest: /etc/vault.d/vault.hcl
+  notify: Restart Vault
+
+- name: Create vault service file
+  template:
+    src: vault.service.j2
+    dest: /etc/systemd/system/vault.service
+  notify: Restart Vault

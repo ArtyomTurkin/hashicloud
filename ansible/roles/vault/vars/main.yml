@@ -1,0 +1,4 @@
+---
+vault_dir: /usr/sbin
+version: 0.9.0
+remote: true

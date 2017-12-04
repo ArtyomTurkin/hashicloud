@@ -1,0 +1,5 @@
+---
+- name: Restart Vault
+  service:
+    name: vault
+    state: reloaded
