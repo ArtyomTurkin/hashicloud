@@ -19,12 +19,23 @@
     installed_version: "0"
   when: c_installed_version.stdout is undefined
 
-- name: Get Consul binary
+- name: Download Consul binary
   unarchive: 
     src: "{{ consul_url }}"
     dest: "{{ consul_dir }}"
     remote_src: true
-  when: version not in installed_version
+  when:
+    - version not in installed_version
+    - remote
+  notify: Restart Consul
+
+- name: Copy Consul binary from local
+  copy:
+    src: "{{ consul_url }}"
+    dest: "{{ consul_dir }}/consul"
+  when:
+    - version not in installed_version
+    - not remote
   notify: Restart Consul
 
 - name: Create Consul group
