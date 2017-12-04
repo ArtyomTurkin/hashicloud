@@ -19,13 +19,23 @@
     installed_version: "0"
   when: c_installed_version.stdout is undefined
 
-- name: Get Nomad binary
+- name: Download Nomad binary
   unarchive: 
     src: "{{ nomad_url }}"
     dest: "{{ nomad_dir }}"
     remote_src: true
   when:
     - version not in installed_version
+    - remote
+  notify: Restart Nomad
+
+- name: Get Nomad binary
+  copy:
+    src: "{{ nomad_url }}"
+    dest: "{{ nomad_dir }}/nomad"
+  when:
+    - version not in installed_version
+    - not remote
   notify: Restart Nomad
 
 - name: Create Nomad group

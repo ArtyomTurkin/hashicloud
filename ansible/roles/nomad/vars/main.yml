@@ -1,3 +1,4 @@
 ---
 nomad_dir: /usr/sbin
 version: 0.7.0-beta1
+remote: true
